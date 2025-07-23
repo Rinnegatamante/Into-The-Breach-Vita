@@ -12,6 +12,9 @@ By doing so, it's basically as if we emulate a minimalist Android environment in
 - Due to the nature of the executable, it is impossible to re-implement proper Netflix subscription check. Please do download and use this loader only if you own an active Netflix subscription.
 - The loader has been tested with v.1.2.92 of the game.
 
+## Controls
+The Android game lacks controller support but the code for it is fully in the executable, so i restored it and enabled in the Vita loader (including cool PS4 icons). L and R triggers are mapped to L2/R2 and the back touch is mapped to L1/R1. Touch controls are still usable.
+
 ## Changelog
 
 ### v1.0
