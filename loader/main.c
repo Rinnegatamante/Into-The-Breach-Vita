@@ -19,6 +19,7 @@
 #include <SDL2/SDL_net.h>
 
 #include <fmod/fmod.h>
+#include <fmod/fmod_studio.h>
 
 #include <malloc.h>
 #include <stdio.h>
@@ -1015,7 +1016,6 @@ extern void *_ZN4FMOD6Studio13EventInstance4stopE21FMOD_STUDIO_STOP_MODE;
 
 int (*musicTrackDone)(unsigned int type, void *event_instance, void *parameters) = NULL;
 
-#define FMOD_STUDIO_EVENT_CALLBACK_STOPPED   (0x20)
 
 int musicTrackFinished(unsigned int type, void *event_instance, void *parameters) {
 	if (type == FMOD_STUDIO_EVENT_CALLBACK_STOPPED) {
@@ -1029,7 +1029,7 @@ int _ZN4FMOD6Studio13EventInstance11setCallbackEPF11FMOD_RESULTjP25FMOD_STUDIO_E
 	return _ZN4FMOD6Studio13EventInstance11setCallbackEPF11FMOD_RESULTjP25FMOD_STUDIO_EVENTINSTANCEPvEj(this, (void *)musicTrackFinished, type);
 }
 
-int FMOD_Studio_System_Create_cpp(void **sys, unsigned int version) {
+int FMOD_Studio_System_Create_cpp(FMOD_STUDIO_SYSTEM **sys, unsigned int version) {
 	if (FMOD_Studio_System_Create(sys, 0x11013)) {
 		fatal_error("Incompatible FMOD version.\nPlease dump libfmodstudio.suprx from PCSE01426 or PCSE01188.");
 	}
@@ -1997,7 +1997,7 @@ void *CallObjectMethodV(void *env, void *obj, int methodID, uintptr_t *args) {
 	int lang = -1;
 	switch (methodID) {
 	default:
-		return 0x34343434;
+		return (void *)(uintptr_t)0x34343434;
 	}
 }
 
@@ -2079,7 +2079,7 @@ so_hook app_init_hook;
 int AppOnInit(uint32_t *this) {
 	int ret = SO_CONTINUE(int, app_init_hook, this);
 	SDL_GameController *p = SDL_GameControllerOpen(0);
-	this[4] = p;
+	this[4] = (uintptr_t)p;
 	void (*SetController)(SDL_GameController *) = (void *)so_symbol(&main_mod, "_ZN8Settings13SetControllerEP19_SDL_GameController");
 	SetController(p);
 	return ret;
@@ -2091,8 +2091,8 @@ void *(*string_from_chars)(int *unk, char *str, size_t len);
 void GetAppVersion(uint32_t *this) {
 	this[0] = 33;
 	this[1] = strlen(APP_VER);
-	this[2] = (char *)_new(this[0]);
-	strcpy(this[2], APP_VER);
+	this[2] = (uintptr_t)_new(this[0]);
+	strcpy((char *)this[2], APP_VER);
 }
 
 void GetNetflixLanguage(int *res) {
@@ -2235,7 +2235,7 @@ int main(int argc, char *argv[]) {
 
 	vglSetSemanticBindingMode(VGL_MODE_POSTPONED);
 	vglSetParamBufferSize(4 * 1024 * 1024);
-	vglSetVertexPoolSize(20 * 1024 * 1024);
+	vglSetCircularPoolSize(20 * 1024 * 1024);
 	vglUseTripleBuffering(GL_FALSE);
 	vglSetFragmentBufferSize(32 * 1024);
 	vglSetVertexBufferSize(32 * 1024);
